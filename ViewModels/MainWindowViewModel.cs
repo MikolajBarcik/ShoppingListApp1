@@ -328,11 +328,20 @@ public partial class MainWindowViewModel : ObservableObject
             var files = Directory.GetFiles(".", "*.json");
             foreach (var file in files)
             {
-                var fileName = Path.GetFileNameWithoutExtension(file);
-                if (!string.IsNullOrEmpty(fileName))
+                // Sprawdź, czy plik zawiera pole 'Items' (czyli jest listą zakupów)
+                try
                 {
-                    savedLists.Add(fileName);
+                    string json = File.ReadAllText(file);
+                    if (json.Contains("\"Items\""))
+                    {
+                        var fileName = Path.GetFileNameWithoutExtension(file);
+                        if (!string.IsNullOrEmpty(fileName))
+                        {
+                            savedLists.Add(fileName);
+                        }
+                    }
                 }
+                catch { /* ignoruj błędy pojedynczych plików */ }
             }
         }
         catch (Exception ex)

@@ -1,12 +1,12 @@
 {
   "Items": [
     {
-      "Name": "piwo",
+      "Name": "chleb",
       "Status": 0,
       "IsBought": false
     },
     {
-      "Name": "chleb",
+      "Name": "piwo",
       "Status": 0,
       "IsBought": true
     }
