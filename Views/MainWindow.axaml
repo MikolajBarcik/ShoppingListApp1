@@ -1,0 +1,85 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:ShoppingListApp.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ShoppingListApp.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Lista zakupów">
+
+	<DockPanel>
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10,5" IsVisible="{Binding ShowMainMenu, Converter={x:Static BoolConverters.Not}}">
+			<Button Content="Stwórz listę zakupów" Command="{Binding CreateNewListCommand}" Margin="0,0,10,0"
+					IsEnabled="{Binding CanCreateNewList}"/>
+			<TextBox Text="{Binding SaveFileName}" Watermark="Nazwa pliku" Width="150" Margin="0,0,5,0"
+					IsVisible="{Binding IsListCreated}"/>
+			<Button Content="Zapisz listę" Command="{Binding SaveListCommand}" Margin="0,0,10,0"
+					IsEnabled="{Binding IsListCreated}"/>
+			<Button Content="Wczytaj listę" Command="{Binding LoadListCommand}" Margin="0,0,10,0"
+					IsEnabled="{Binding CanLoadList}"/>
+			<Button Content="Zamknij" Command="{Binding CloseCommand}"/>
+		</StackPanel>
+		
+		<StackPanel Margin="10" IsVisible="{Binding ShowMainMenu}">
+			<TextBlock Text="Lista zakupów" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,20"/>
+			<TextBlock Text="Wybierz opcję:" FontSize="16" HorizontalAlignment="Center" Margin="0,20"/>
+			<Button Content="Stwórz nową listę zakupów" Command="{Binding StartNewListCommand}" 
+					Width="250" Height="40" Margin="0,10" FontSize="14"
+					IsEnabled="{Binding ShowLoadMenu, Converter={x:Static BoolConverters.Not}}"/>
+			<Button Content="Wczytaj istniejącą listę" Command="{Binding LoadExistingListCommand}" 
+					Width="250" Height="40" Margin="0,10" FontSize="14"/>
+			<Button Content="Zamknij program" Command="{Binding CloseCommand}" 
+					Width="250" Height="40" Margin="0,10" FontSize="14"/>
+		</StackPanel>
+		
+		<StackPanel Margin="10" IsVisible="{Binding ShowLoadMenu}">
+			<TextBlock Text="Wybierz listę do wczytania:" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,20"/>
+			<ItemsControl ItemsSource="{Binding AvailableLists}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<DockPanel Margin="0,5">
+							<Button Content="{Binding}" Command="{Binding DataContext.LoadSpecificListCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+									CommandParameter="{Binding}" Width="250" Height="35" FontSize="12"/>
+							<Button Content="🗑️" Command="{Binding DataContext.DeleteListCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+									CommandParameter="{Binding}" Width="40" Height="35" Margin="5,0" FontSize="12"/>
+						</DockPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+			<Button Content="Powrót" Command="{Binding BackToMainMenuCommand}" 
+					Width="150" Height="35" Margin="0,20" FontSize="12"/>
+		</StackPanel>
+		
+		<StackPanel Margin="10" IsVisible="{Binding ShowDeleteConfirmation}">
+			<TextBlock Text="Potwierdź usunięcie" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,20"/>
+			<TextBlock Text="{Binding DeleteConfirmationMessage}" FontSize="14" HorizontalAlignment="Center" Margin="0,20" TextWrapping="Wrap"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
+				<Button Content="Zapisz (Usuń)" Command="{Binding ConfirmDeleteCommand}" 
+						Width="150" Height="40" Margin="10,0" FontSize="14" Background="Red" Foreground="White"/>
+				<Button Content="Anuluj" Command="{Binding CancelDeleteCommand}" 
+						Width="150" Height="40" Margin="10,0" FontSize="14"/>
+			</StackPanel>
+		</StackPanel>
+		
+		<StackPanel Margin="10" IsVisible="{Binding IsListCreated}">
+			<TextBox Text="{Binding NewItemName}" Watermark="Nowy produkt" />
+			<TextBlock Text="{Binding DuplicateMessage}" Foreground="Red" Margin="0,5" IsVisible="{Binding DuplicateMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+			<Button Content="Dodaj" Command="{Binding AddItemCommand}" Margin="0,5"/>
+
+			<ItemsControl ItemsSource="{Binding Items}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<DockPanel Margin="5">
+							<TextBlock Text="{Binding Name}" Width="200" VerticalAlignment="Center"/>
+							<Button Content="🗑️" Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+									CommandParameter="{Binding}" Width="30" Height="30" Margin="2,0"
+									HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0"/>
+							<CheckBox Content="Kupiony" IsChecked="{Binding IsBought}" Margin="5,0"/>
+						</DockPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+	</DockPanel>
+</Window>

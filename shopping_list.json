@@ -1,0 +1,15 @@
+{
+  "Items": [
+    {
+      "Name": "piwo",
+      "Status": 0,
+      "IsBought": false
+    },
+    {
+      "Name": "chleb",
+      "Status": 0,
+      "IsBought": true
+    }
+  ],
+  "IsListCreated": true
+}
